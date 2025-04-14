@@ -104,8 +104,8 @@ The architecture of the AI-Powered Escrow System can be represented as follows:
 1.  **Clone the Repository:**
 ```
 bash
-    git clone <repository-url>
-    cd <repository-directory>
+    git clone https://github.com/mbirochan/escrow_daap_with_agents.git
+    cd escrow_daap_with_agents
     
 ```
 2.  **Install Dependencies:**
