@@ -49,7 +49,7 @@ contract Escrow is ReentrancyGuard, Ownable, Pausable {
 
     // Modifiers
     modifier onlyPartyA(uint256 _escrowId) {
-        require(
+        require(_escrowId < escrowCounter, "Invalid escrow ID");require(
             msg.sender == escrows[_escrowId].partyA,
             "Only partyA can perform this action"
         );
@@ -57,7 +57,7 @@ contract Escrow is ReentrancyGuard, Ownable, Pausable {
     }
 
     modifier onlyPartyB(uint256 _escrowId) {
-        require(
+        require(_escrowId < escrowCounter, "Invalid escrow ID");require(
             msg.sender == escrows[_escrowId].partyB,
             "Only partyB can perform this action"
         );
@@ -66,11 +66,6 @@ contract Escrow is ReentrancyGuard, Ownable, Pausable {
 
     modifier onlyAI() {
         require(msg.sender == aiAgent, "Unauthorized AI agent");
-        _;
-    }
-
-    modifier validEscrow(uint256 _escrowId) {
-        require(_escrowId < escrowCounter, "Invalid escrow ID");
         _;
     }
 
@@ -107,8 +102,7 @@ contract Escrow is ReentrancyGuard, Ownable, Pausable {
         uint256 _escrowId
     )
         external
-        payable
-        validEscrow(_escrowId)
+        payable        
         onlyPartyA(_escrowId)
         whenNotPaused
     {
@@ -128,10 +122,10 @@ contract Escrow is ReentrancyGuard, Ownable, Pausable {
     function setVerifiables(
         uint256 _escrowId,
         string[] calldata _verifiables
-    ) external validEscrow(_escrowId) whenNotPaused {
+    ) external whenNotPaused {
         Escrow storage escrow = escrows[_escrowId];
         require(
-            msg.sender == escrow.partyA || msg.sender == aiAgent,
+            msg.sender == escrow.partyA || msg.sender == aiAgent, 
             "Only partyA or AI agent can set verifiables"
         );
         require(
@@ -147,7 +141,7 @@ contract Escrow is ReentrancyGuard, Ownable, Pausable {
 
     function releaseFunds(
         uint256 _escrowId
-    ) external nonReentrant validEscrow(_escrowId) onlyAI whenNotPaused {
+    ) external nonReentrant onlyAI whenNotPaused {
         Escrow storage escrow = escrows[_escrowId];
         require(
             escrow.status == EscrowStatus.ConditionsMonitoring,
@@ -166,7 +160,7 @@ contract Escrow is ReentrancyGuard, Ownable, Pausable {
     function raiseDispute(
         uint256 _escrowId,
         string memory _reason
-    ) external validEscrow(_escrowId) whenNotPaused {
+    ) external whenNotPaused {
         Escrow storage escrow = escrows[_escrowId];
         require(
             msg.sender == escrow.partyA || msg.sender == escrow.partyB,
@@ -185,7 +179,7 @@ contract Escrow is ReentrancyGuard, Ownable, Pausable {
     function resolveDispute(
         uint256 _escrowId,
         address _winner
-    ) external nonReentrant validEscrow(_escrowId) onlyAI whenNotPaused {
+    ) external nonReentrant onlyAI whenNotPaused {
         Escrow storage escrow = escrows[_escrowId];
         require(
             escrow.status == EscrowStatus.Disputed,
@@ -206,7 +200,7 @@ contract Escrow is ReentrancyGuard, Ownable, Pausable {
 
     function cancelEscrow(
         uint256 _escrowId
-    ) external validEscrow(_escrowId) onlyPartyA(_escrowId) whenNotPaused {
+    ) external onlyPartyA(_escrowId) whenNotPaused {
         Escrow storage escrow = escrows[_escrowId];
         require(
             escrow.status == EscrowStatus.Drafting,
