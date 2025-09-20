@@ -270,3 +270,9 @@ bash
 ## Conclusion
 
 This documentation provides a detailed overview of the AI-Powered Escrow System project, covering its architecture, components, setup, operation, and testing. Each component plays a critical role in creating a decentralized, automated, and intelligent escrow process. This system is designed to be robust, secure, and scalable, leveraging the power of blockchain and AI to enhance traditional escrow services.
+
+## Roadmap
+- [ ] Deploy contracts to Solana testnet
+- [ ] Integrate escrow dispute resolution using AI agents
+- [ ] Add notifications and monitoring dashboard
+- [ ] Optimize gas usage for mainnet deployment
